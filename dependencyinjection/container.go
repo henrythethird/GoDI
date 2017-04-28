@@ -5,25 +5,25 @@ import (
 	"fmt"
 )
 
-const TAG_NAME  = "autoinject"
+const TAG_NAME = "autoinject"
 
-type constructor func () interface{}
+type constructor func() interface{}
 
 type Config map[string]interface{}
 type ServiceMap map[string]interface{}
 type ServiceDefinitionMap map[string](constructor)
 
 type Container struct {
-	services ServiceMap
+	services           ServiceMap
 	serviceDefinitions ServiceDefinitionMap
-	parameters Config
+	parameters         Config
 }
 
 func NewContainer() *Container {
 	return &Container{
-		services: make(ServiceMap),
+		services:           make(ServiceMap),
 		serviceDefinitions: make(ServiceDefinitionMap),
-		parameters: make(Config),
+		parameters:         make(Config),
 	}
 }
 

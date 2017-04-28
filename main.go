@@ -11,7 +11,7 @@ type YetAnotherService struct {
 }
 
 type OtherService struct {
-	Value 		int
+	Value int
 }
 
 type SomeService struct {
@@ -22,20 +22,20 @@ type SomeService struct {
 }
 
 type ValueService struct {
-	SomeService	*SomeService		`autoinject:"-"`
+	SomeService *SomeService                `autoinject:"-"`
 }
 
 func main() {
 	container := NewContainer()
 
 	container.
-		AddParameter("param_value", "There once was a man").
+	AddParameter("param_value", "There once was a man").
 		AddParameter("service_param", "My Name").
 		Register("main.OtherService", func() interface{} {
-			return &OtherService{Value:100}
+			return &OtherService{Value: 100}
 		}).
 		Register("main.YetAnotherService", func() interface{} {
-			return &YetAnotherService{Age:200}
+			return &YetAnotherService{Age: 200}
 		}).
 		Register("main.SomeService", func() interface{} {
 			return &SomeService{}
@@ -55,4 +55,3 @@ func main() {
 		someServiceInstance,
 	)
 }
-
