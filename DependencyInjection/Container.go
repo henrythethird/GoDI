@@ -8,15 +8,22 @@ const TAG_NAME  = "autoinject"
 
 type constructor func (*Container) interface{}
 
+type Config map[string]interface{}
+type ServiceMap map[string]interface{}
+type ServiceDefinitionMap map[string](constructor)
+
+
 type Container struct {
-	services map[string]interface{}
-	serviceDefinitions map[string](constructor)
+	services ServiceMap
+	serviceDefinitions ServiceDefinitionMap
+	parameters Config
 }
 
 func NewContainer() *Container {
 	return &Container{
-		services: make(map[string]interface{}),
-		serviceDefinitions: make(map[string](constructor)),
+		services: make(ServiceMap),
+		serviceDefinitions: make(ServiceDefinitionMap),
+		parameters: make(Config),
 	}
 }
 
