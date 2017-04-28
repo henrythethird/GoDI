@@ -1,4 +1,4 @@
-package DependencyInjection
+package dependencyinjection
 
 import (
 	"reflect"
@@ -81,20 +81,20 @@ func (this *Container) AutoInject(object interface{}) interface{} {
 			continue
 		}
 
-		var constructedService interface{}
-
-		/* automatically resolve type */
-		if tagValue == "-" {
-			constructedService = this.Get(field.Type().Elem().Name())
-		} else {
-			constructedService = this.GetParameter(tagValue)
-		}
-
-
-		field.Set(reflect.ValueOf(constructedService))
+		field.Set(reflect.ValueOf(
+			this.resolveTag(tagValue, field.Type()),
+		))
 	}
 
 	return object
+}
+
+func (this *Container) resolveTag(tagValue string, fieldType reflect.Type) interface{} {
+	if tagValue == "-" {
+		return this.Get(fieldType.Elem().Name())
+	}
+
+	return this.GetParameter(tagValue)
 }
 
 func (this *Container) has(key string) bool {
