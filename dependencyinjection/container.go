@@ -2,7 +2,7 @@ package dependencyinjection
 
 import (
 	"reflect"
-	//"fmt"
+	"fmt"
 )
 
 const TAG_NAME  = "autoinject"
@@ -36,7 +36,7 @@ func (this *Container) Register(key string, serviceConstructor constructor) (*Co
 
 func (this *Container) Get(key string) interface{} {
 	if !this.has(key) {
-		panic("Not implemented")
+		panic(fmt.Sprintf("Unregistered service: \"%s\"", key))
 	}
 
 	if _, ok := this.services[key]; !ok {
@@ -51,7 +51,7 @@ func (this *Container) GetParameter(key string) interface{} {
 	val, ok := this.parameters[key]
 
 	if !ok {
-		panic("Parameter not in list")
+		panic(fmt.Sprintf("Undefined parameter: \"%s\"", key))
 	}
 
 	return val
