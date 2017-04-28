@@ -29,7 +29,7 @@ func main() {
 	container := NewContainer()
 
 	container.
-	AddParameter("param_value", "There once was a man").
+		AddParameter("param_value", "There once was a man").
 		AddParameter("service_param", "My Name").
 		Register("main.OtherService", func() interface{} {
 			return &OtherService{Value: 100}
