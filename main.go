@@ -7,6 +7,7 @@ import (
 
 type YetAnotherService struct {
 	Age 		int
+	Name		string	`autoinject:"service_param"`
 }
 
 type OtherService struct {
@@ -29,17 +30,18 @@ func main() {
 
 	container.
 		AddParameter("param_value", "There once was a man").
-		Register("OtherService", func(container *Container) interface{} {
+		AddParameter("service_param", "My Name").
+		Register("OtherService", func() interface{} {
 			return &OtherService{Value:100}
 		}).
-		Register("YetAnotherService", func(container *Container) interface{} {
+		Register("YetAnotherService", func() interface{} {
 			return &YetAnotherService{Age:200}
 		}).
-		Register("SomeService", func(container *Container) interface{} {
-			return container.AutoInject(&SomeService{})
+		Register("SomeService", func() interface{} {
+			return &SomeService{}
 		}).
-		Register("ValueService", func(container *Container) interface{} {
-			return container.AutoInject(&ValueService{})
+		Register("ValueService", func() interface{} {
+			return &ValueService{}
 		})
 
 	valueServiceInstance := container.Get("ValueService")
@@ -48,7 +50,7 @@ func main() {
 	someServiceInstance.(*SomeService).InternalValue = 55
 
 	fmt.Println(
-		someServiceInstance.(*SomeService).InternalValue,
+		someServiceInstance.(*SomeService).AnotherService.Name,
 		valueServiceInstance.(*ValueService).SomeService.InternalValue,
 		someServiceInstance,
 	)

@@ -7,7 +7,7 @@ import (
 
 const TAG_NAME  = "autoinject"
 
-type constructor func (*Container) interface{}
+type constructor func () interface{}
 
 type Config map[string]interface{}
 type ServiceMap map[string]interface{}
@@ -41,7 +41,7 @@ func (this *Container) Get(key string) interface{} {
 
 	if _, ok := this.services[key]; !ok {
 		serviceConstructor := this.serviceDefinitions[key]
-		this.services[key] = serviceConstructor(this)
+		this.services[key] = this.AutoInject(serviceConstructor())
 	}
 
 	return this.services[key]
