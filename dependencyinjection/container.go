@@ -27,27 +27,27 @@ func NewContainer() *Container {
 	}
 }
 
-func (this *Container) Register(key string, serviceConstructor constructor) (*Container) {
-	this.serviceDefinitions[key] = serviceConstructor
+func (c *Container) Register(key string, serviceConstructor constructor) (*Container) {
+	c.serviceDefinitions[key] = serviceConstructor
 
-	return this
+	return c
 }
 
-func (this *Container) Get(key string) interface{} {
-	if !this.has(key) {
+func (c *Container) Get(key string) interface{} {
+	if !c.has(key) {
 		panic(fmt.Sprintf("Unregistered service: \"%s\"", key))
 	}
 
-	if _, ok := this.services[key]; !ok {
-		serviceConstructor := this.serviceDefinitions[key]
-		this.services[key] = this.AutoInject(serviceConstructor())
+	if _, ok := c.services[key]; !ok {
+		serviceConstructor := c.serviceDefinitions[key]
+		c.services[key] = c.AutoInject(serviceConstructor())
 	}
 
-	return this.services[key]
+	return c.services[key]
 }
 
-func (this *Container) GetParameter(key string) interface{} {
-	val, ok := this.parameters[key]
+func (c *Container) GetParameter(key string) interface{} {
+	val, ok := c.parameters[key]
 
 	if !ok {
 		panic(fmt.Sprintf("Undefined parameter: \"%s\"", key))
@@ -56,13 +56,13 @@ func (this *Container) GetParameter(key string) interface{} {
 	return val
 }
 
-func (this *Container) AddParameter(key string, value interface{}) (*Container) {
-	this.parameters[key] = value
+func (c *Container) AddParameter(key string, value interface{}) (*Container) {
+	c.parameters[key] = value
 
-	return this
+	return c
 }
 
-func (this *Container) AutoInject(object interface{}) interface{} {
+func (c *Container) AutoInject(object interface{}) interface{} {
 	value := reflect.ValueOf(object).Elem()
 	vType := reflect.TypeOf(object).Elem()
 
@@ -81,22 +81,22 @@ func (this *Container) AutoInject(object interface{}) interface{} {
 		}
 
 		field.Set(reflect.ValueOf(
-			this.resolveTag(tagValue, field.Type()),
+			c.resolveTag(tagValue, field.Type()),
 		))
 	}
 
 	return object
 }
 
-func (this *Container) resolveTag(tagValue string, fieldType reflect.Type) interface{} {
+func (c *Container) resolveTag(tagValue string, fieldType reflect.Type) interface{} {
 	if tagValue == "-" {
-		return this.Get(fieldType.Elem().String())
+		return c.Get(fieldType.Elem().String())
 	}
 
-	return this.GetParameter(tagValue)
+	return c.GetParameter(tagValue)
 }
 
-func (this *Container) has(key string) bool {
-	_, ok := this.serviceDefinitions[key]
+func (c *Container) has(key string) bool {
+	_, ok := c.serviceDefinitions[key]
 	return ok
 }
