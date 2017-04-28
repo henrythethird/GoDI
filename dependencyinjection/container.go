@@ -13,7 +13,6 @@ type Config map[string]interface{}
 type ServiceMap map[string]interface{}
 type ServiceDefinitionMap map[string](constructor)
 
-
 type Container struct {
 	services ServiceMap
 	serviceDefinitions ServiceDefinitionMap
@@ -91,7 +90,7 @@ func (this *Container) AutoInject(object interface{}) interface{} {
 
 func (this *Container) resolveTag(tagValue string, fieldType reflect.Type) interface{} {
 	if tagValue == "-" {
-		return this.Get(fieldType.Elem().Name())
+		return this.Get(fieldType.Elem().String())
 	}
 
 	return this.GetParameter(tagValue)
