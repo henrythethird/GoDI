@@ -1,4 +1,4 @@
-package dependencyinjection
+package autoinject
 
 import (
 	"reflect"
@@ -90,6 +90,10 @@ func (c *Container) AutoInject(object interface{}) interface{} {
 
 func (c *Container) resolveTag(tagValue string, fieldType reflect.Type) interface{} {
 	if tagValue == "-" {
+		if fieldType.Kind().String() != "ptr" {
+			panic(fmt.Sprintf("Expected pointer type got: \"%s\"", fieldType))
+		}
+
 		return c.Get(fieldType.Elem().String())
 	}
 
