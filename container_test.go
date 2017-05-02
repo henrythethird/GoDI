@@ -11,8 +11,10 @@ type TestContainer_Service struct {
 }
 
 type TestContainer_InjectTest struct {
-	Foo	string			`autoinject:"test.string.foo"`
-	Service *TestContainer_Service	`autoinject:"-"`
+	private		string
+	OtherTag	string			`json:"other_tag"`
+	Foo		string			`autoinject:"test.string.foo"`
+	Service 	*TestContainer_Service	`autoinject:"-"`
 }
 
 type TestContainer_Invalid struct {
