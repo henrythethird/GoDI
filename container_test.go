@@ -30,15 +30,19 @@ func TestContainer_AddParameter(t *testing.T) {
 
 	container.AddParameter("test.randomInt", 42)
 
-	param, _ := container.GetParameter("test.randomInt")
+	param, err := container.GetParameter("test.randomInt")
+
 	assert.Equal(t, 42, param)
+	assert.NoError(t, err)
 }
 
 func TestContainer_GetParameter(t *testing.T) {
 	container := NewContainer()
 
-	_, err := container.GetParameter("test.invalid")
+	parameter, err := container.GetParameter("test.invalid")
+
 	assert.Error(t, err)
+	assert.Nil(t, parameter)
 }
 
 func TestContainer_Register(t *testing.T) {
@@ -48,16 +52,19 @@ func TestContainer_Register(t *testing.T) {
 		return &struct {}{}
 	})
 
-	assert.NotPanics(t, func() {
-		container.Get("service")
-	})
+	service, err := container.Get("service")
+
+	assert.NoError(t, err)
+	assert.NotNil(t, service)
 }
 
 func TestContainer_Get(t *testing.T) {
 	container := NewContainer()
 
-	_, err := container.Get("invalid")
+	service, err := container.Get("invalid")
+
 	assert.Error(t, err)
+	assert.Nil(t, service)
 }
 
 func TestContainer_AutoInject(t *testing.T) {
@@ -70,9 +77,10 @@ func TestContainer_AutoInject(t *testing.T) {
 
 	testObj := new(TestContainer_InjectTest)
 
-	_, err := container.AutoInject(testObj)
+	service, err := container.AutoInject(testObj)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, service)
 }
 
 func TestContainer_AutoInject2(t *testing.T) {
@@ -88,8 +96,10 @@ func TestContainer_AutoInject2(t *testing.T) {
 
 	testObj := new(TestContainer_MultiLevel)
 
-	_, err := container.AutoInject(testObj)
+	service, err := container.AutoInject(testObj)
+
 	assert.NoError(t, err)
+	assert.NotNil(t, service)
 }
 
 func TestContainer_AutoInject_ErrorOnNonPointer(t *testing.T) {
@@ -101,7 +111,9 @@ func TestContainer_AutoInject_ErrorOnNonPointer(t *testing.T) {
 
 	testObj := new(TestContainer_Invalid)
 
-	_, err := container.AutoInject(testObj)
+	service, err := container.AutoInject(testObj)
+
 	assert.Error(t, err)
+	assert.Nil(t, service)
 }
 
