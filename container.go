@@ -3,6 +3,7 @@ package autoinject
 import (
 	"reflect"
 	"fmt"
+	"errors"
 )
 
 const TAG_NAME = "autoinject"
@@ -33,27 +34,33 @@ func (c *Container) Register(key string, serviceConstructor constructor) (*Conta
 	return c
 }
 
-func (c *Container) Get(key string) interface{} {
+func (c *Container) Get(key string) (interface{}, error) {
 	if !c.has(key) {
-		panic(fmt.Sprintf("Unregistered service: \"%s\"", key))
+		return nil, errors.New(fmt.Sprintf("Unregistered service: \"%s\"", key))
 	}
 
 	if _, ok := c.services[key]; !ok {
 		serviceConstructor := c.serviceDefinitions[key]
-		c.services[key] = c.AutoInject(serviceConstructor())
+		service, err := c.AutoInject(serviceConstructor())
+
+		if nil != err {
+			return nil, err
+		}
+
+		c.services[key] = service
 	}
 
-	return c.services[key]
+	return c.services[key], nil
 }
 
-func (c *Container) GetParameter(key string) interface{} {
+func (c *Container) GetParameter(key string) (interface{}, error) {
 	val, ok := c.parameters[key]
 
 	if !ok {
-		panic(fmt.Sprintf("Undefined parameter: \"%s\"", key))
+		return nil, errors.New(fmt.Sprintf("Undefined parameter: \"%s\"", key))
 	}
 
-	return val
+	return val, nil
 }
 
 func (c *Container) AddParameter(key string, value interface{}) (*Container) {
@@ -62,7 +69,7 @@ func (c *Container) AddParameter(key string, value interface{}) (*Container) {
 	return c
 }
 
-func (c *Container) AutoInject(object interface{}) interface{} {
+func (c *Container) AutoInject(object interface{}) (interface{}, error) {
 	value := reflect.ValueOf(object).Elem()
 	vType := reflect.TypeOf(object).Elem()
 
@@ -80,18 +87,22 @@ func (c *Container) AutoInject(object interface{}) interface{} {
 			continue
 		}
 
-		field.Set(reflect.ValueOf(
-			c.resolveTag(tagValue, field.Type()),
-		))
+		resolved, err := c.resolveTag(tagValue, field.Type())
+
+		if nil != err {
+			return nil, err
+		}
+
+		field.Set(reflect.ValueOf(resolved))
 	}
 
-	return object
+	return object, nil
 }
 
-func (c *Container) resolveTag(tagValue string, fieldType reflect.Type) interface{} {
+func (c *Container) resolveTag(tagValue string, fieldType reflect.Type) (interface{}, error) {
 	if tagValue == "-" {
 		if fieldType.Kind().String() != "ptr" {
-			panic(fmt.Sprintf("Expected pointer type got: \"%s\"", fieldType))
+			return nil, errors.New(fmt.Sprintf("Expected pointer type got: \"%s\"", fieldType))
 		}
 
 		return c.Get(fieldType.Elem().String())
