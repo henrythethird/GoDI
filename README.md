@@ -1,4 +1,6 @@
-# AutoInject - GoLang DependencyInjection Framework
+# AutoInject
+
+AutoInject is a lightweight golang dependency injection framework
 
 **Build Status:** [![Build Status](https://travis-ci.org/henrythethird/autoinject.svg?branch=master)](https://travis-ci.org/henrythethird/autoinject)
 
@@ -12,7 +14,11 @@ go get -u github.com/stretchr/testify/assert
 
 ### Basic Usage - AutoInjection
 
-Given a service you'd like to inject, register the service with the fully qualified struct name to the container:
+```go
+import "github.com/henrythethird/autoinject"
+```
+
+Given a service you'd like to inject, register it with the fully qualified struct name to the container:
 ```go
 type Name struct {}
 
