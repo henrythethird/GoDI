@@ -1,5 +1,7 @@
 # AutoInject - GoLang DependencyInjection Framework
 
+**Build Status:** [![Build Status](https://travis-ci.org/henrythethird/autoinject.svg?branch=master)](https://travis-ci.org/henrythethird/autoinject)
+
 ### Set-Up
 
 Make sure to install github.com/stretchr/testify/assert to run the tests
