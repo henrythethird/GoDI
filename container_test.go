@@ -18,7 +18,7 @@ type TestContainer_InjectTest struct {
 }
 
 type TestContainer_Invalid struct {
-	Service TestContainer_Service	`autoinject:"-"`
+	Service TestContainer_Service		`autoinject:"-"`
 }
 
 type TestContainer_MultiLevel struct {
