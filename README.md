@@ -2,7 +2,7 @@
 
 AutoInject is a lightweight golang dependency injection framework
 
-**Build Status:** [![Build Status](https://travis-ci.org/henrythethird/autoinject.svg?branch=master)](https://travis-ci.org/henrythethird/autoinject)
+**Build Status:** [![Build Status](https://travis-ci.org/owtorg/autoinject.svg?branch=master)](https://travis-ci.org/owtorg/autoinject)
 
 ### Basic Usage - AutoInjection
 
