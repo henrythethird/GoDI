@@ -2,7 +2,6 @@ package autoinject
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
 )
 
 
@@ -32,8 +31,13 @@ func TestContainer_AddParameter(t *testing.T) {
 
 	param, err := container.GetParameter("test.randomInt")
 
-	assert.Equal(t, 42, param)
-	assert.NoError(t, err)
+	if 42 != param {
+		t.Error("Expected 42 got ", param)
+	}
+
+	if err != nil {
+		t.Error("No error expected")
+	}
 }
 
 func TestContainer_GetParameter(t *testing.T) {
@@ -41,8 +45,13 @@ func TestContainer_GetParameter(t *testing.T) {
 
 	parameter, err := container.GetParameter("test.invalid")
 
-	assert.Error(t, err)
-	assert.Nil(t, parameter)
+	if err == nil {
+		t.Error("Expected an error")
+	}
+
+	if parameter != nil {
+		t.Error("Expected nil got ", parameter)
+	}
 }
 
 func TestContainer_Register(t *testing.T) {
@@ -54,8 +63,13 @@ func TestContainer_Register(t *testing.T) {
 
 	service, err := container.Get("service")
 
-	assert.NoError(t, err)
-	assert.NotNil(t, service)
+	if err != nil {
+		t.Error("Expected no error")
+	}
+
+	if service == nil {
+		t.Error("Expected not nil")
+	}
 }
 
 func TestContainer_Get(t *testing.T) {
@@ -63,8 +77,13 @@ func TestContainer_Get(t *testing.T) {
 
 	service, err := container.Get("invalid")
 
-	assert.Error(t, err)
-	assert.Nil(t, service)
+	if err == nil {
+		t.Error("Expected error")
+	}
+
+	if service != nil {
+		t.Error("Expected nil service got ", service)
+	}
 }
 
 func TestContainer_AutoInject(t *testing.T) {
@@ -79,8 +98,13 @@ func TestContainer_AutoInject(t *testing.T) {
 
 	service, err := container.AutoInject(testObj)
 
-	assert.NoError(t, err)
-	assert.NotNil(t, service)
+	if err != nil {
+		t.Error("Expected no error")
+	}
+
+	if service == nil {
+		t.Error("Expected service got nil")
+	}
 }
 
 func TestContainer_AutoInject2(t *testing.T) {
@@ -98,8 +122,13 @@ func TestContainer_AutoInject2(t *testing.T) {
 
 	service, err := container.AutoInject(testObj)
 
-	assert.NoError(t, err)
-	assert.NotNil(t, service)
+	if err != nil {
+		t.Error("Expected no error")
+	}
+
+	if service == nil {
+		t.Error("Expected service to be not nil")
+	}
 }
 
 func TestContainer_AutoInject_ErrorOnNonPointer(t *testing.T) {
@@ -113,7 +142,12 @@ func TestContainer_AutoInject_ErrorOnNonPointer(t *testing.T) {
 
 	service, err := container.AutoInject(testObj)
 
-	assert.Error(t, err)
-	assert.Nil(t, service)
+	if err == nil {
+		t.Error("Expected an error")
+	}
+
+	if service != nil {
+		t.Error("Expected nil")
+	}
 }
 
